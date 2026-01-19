@@ -1,29 +1,42 @@
 import { Keypair, PublicKey, Connection, Commitment } from "@solana/web3.js";
-import { getOrCreateAssociatedTokenAccount, mintTo } from '@solana/spl-token';
-import wallet from "../turbin3-wallet.json"
+import { getOrCreateAssociatedTokenAccount, mintTo } from "@solana/spl-token";
+import dotenv from "dotenv";
 
-// Import our keypair from the wallet file
-const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
+dotenv.config();
 
-//Create a Solana devnet connection
+const secretKey = JSON.parse(process.env.SECRET_KEY!);
+const keypair = Keypair.fromSecretKey(new Uint8Array(secretKey));
+
 const commitment: Commitment = "confirmed";
 const connection = new Connection("https://api.devnet.solana.com", commitment);
 
-const token_decimals = 1_000_000n;
-
 // Mint address
-const mint = new PublicKey("<mint address>");
+const mint = new PublicKey("9MZbaaBWVubisECWJ4NuPCMYSuJuQodrTxeP9xBRw5w1");
+
+const amount = 1_000_000_000n;
 
 (async () => {
-    try {
-        // Create an ATA
-        // const ata = ???
-        // console.log(`Your ata is: ${ata.address.toBase58()}`);
+  try {
+    const ata = await getOrCreateAssociatedTokenAccount(
+      connection,
+      keypair,
+      mint,
+      keypair.publicKey
+    );
 
-        // Mint to ATA
-        // const mintTx = ???
-        // console.log(`Your mint txid: ${mintTx}`);
-    } catch(error) {
-        console.log(`Oops, something went wrong: ${error}`)
-    }
-})()
+    console.log("Your ATA:", ata.address.toBase58());
+
+    const mintTx = await mintTo(
+      connection,
+      keypair,
+      mint,
+      ata.address,
+      keypair,   
+      amount
+    );
+
+    console.log("Mint tx:", mintTx);
+  } catch (error) {
+    console.error("Oops, something went wrong:", error);
+  }
+})();

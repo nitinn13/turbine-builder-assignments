@@ -1,19 +1,31 @@
 import { Keypair, Connection, Commitment } from "@solana/web3.js";
-import { createMint } from '@solana/spl-token';
-import wallet from "../turbin3-wallet.json"
+import { createMint } from "@solana/spl-token";
+import dotenv from "dotenv";
 
-// Import our keypair from the wallet file
-const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
+dotenv.config();
 
-//Create a Solana devnet connection
+const secretKey = JSON.parse(process.env.SECRET_KEY!);
+
+const keypair = Keypair.fromSecretKey(
+  new Uint8Array(secretKey)
+);
+
 const commitment: Commitment = "confirmed";
 const connection = new Connection("https://api.devnet.solana.com", commitment);
 
 (async () => {
-    try {
-        // Start here
-        // const mint = ???
-    } catch(error) {
-        console.log(`Oops, something went wrong: ${error}`)
-    }
-})()
+  try {
+    const mint = await createMint(
+      connection,
+      keypair,
+      keypair.publicKey,
+      null,
+      9,
+      Keypair.generate()
+    );
+
+    console.log("Mint created at:", mint.toBase58());
+  } catch (error) {
+    console.error("Oops, something went wrong:", error);
+  }
+})();
