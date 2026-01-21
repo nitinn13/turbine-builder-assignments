@@ -17,7 +17,7 @@ const connection = new Connection("https://api.devnet.solana.com", commitment);
 // Mint address
 const mint = new PublicKey("9MZbaaBWVubisECWJ4NuPCMYSuJuQodrTxeP9xBRw5w1");
 
-const to = new PublicKey("7ECQhNSYfCWQoSHVvE9WaZ3Z9XiXceEhgHbYXpcGwh1X");
+const to = new PublicKey("berg7BKPHZWPiAdjpitQaWCfTELaKjQ6x7e9nDSu23d");
 const amount = 1_000_000_000n;
 
 
@@ -52,6 +52,7 @@ const amount = 1_000_000_000n;
             keypair,                    // owner (signer)
             amount
         );
+        console.log(tx);
     } catch (e) {
         console.error(`Oops, something went wrong: ${e}`)
     }
