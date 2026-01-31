@@ -7,11 +7,15 @@ import {
 } from "@solana/web3.js";
 import { Program, Wallet, AnchorProvider, Address } from "@coral-xyz/anchor";
 import { WbaVault, IDL } from "./programs/wba_vault";
-import wallet from "./wallet/turbin3-wallet.json";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const secretKey = JSON.parse(process.env.SECRET_KEY!);
 /// J8qKEmQpadFeBuXAVseH8GNrvsyBhMT8MHSVD3enRgJz
 
 // Import our keypair from the wallet file
-const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
+const keypair = Keypair.fromSecretKey(new Uint8Array(secretKey));
 
 // Commitment
 const commitment: Commitment = "confirmed";
